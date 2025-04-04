@@ -1,3 +1,10 @@
+### Initial Setup
+Before proceeding, ensure you have:
+1. Installed Cursor IDE from https://cursor.sh
+2. Opened Cursor IDE
+3. Opened the Command Palette (Cmd/Ctrl + Shift + P)
+4. Type and run the command: `Run cinit`
+
 # Cursor AI Workspace Setup
 
 Personal workspace configuration for Cursor AI, including MCP setup, project templates, and development tools.
