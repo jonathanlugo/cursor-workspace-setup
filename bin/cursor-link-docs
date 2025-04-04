@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Script to create symbolic links to Cursor AI documentation files
+# Usage: cursor-link-docs [target_directory]
+
+# Set default target directory to current directory if not provided
+TARGET_DIR="${1:-.}"
+
+# Source directory for documentation files
+DOCS_DIR="$HOME/.cursor-docs"
+
+# List of files to link
+FILES=("BEST PRACTICES.md" "Requirements Engineering.md")
+
+# Create symbolic links
+for file in "${FILES[@]}"; do
+    # Remove existing file or link if present
+    if [ -e "$TARGET_DIR/$file" ] || [ -L "$TARGET_DIR/$file" ]; then
+        rm "$TARGET_DIR/$file"
+    fi
+    
+    # Create symbolic link
+    ln -s "$DOCS_DIR/$file" "$TARGET_DIR/$file"
+    
+    echo "Created symbolic link for $file"
+done
+
+echo "Documentation files linked successfully!"

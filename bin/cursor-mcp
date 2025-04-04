@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Function to setup MCP configuration
+setup_mcp() {
+    local CONFIG_DIR="$HOME/.cursor"
+    local TEMPLATE_PATH="$HOME/.cursor-docs/mcp.template.json"
+    local CONFIG_PATH="$CONFIG_DIR/mcp.json"
+
+    # Create .cursor directory if it doesn't exist
+    mkdir -p "$CONFIG_DIR"
+
+    # If mcp.json doesn't exist, copy from template
+    if [ ! -f "$CONFIG_PATH" ]; then
+        cp "$TEMPLATE_PATH" "$CONFIG_PATH"
+        echo "MCP configuration created at $CONFIG_PATH"
+    else
+        echo "MCP configuration already exists at $CONFIG_PATH"
+    fi
+
+    # Check if environment variables are set
+    local missing_vars=false
+    local vars=("MCP_SUPABASE_URL" "MCP_FIGMA_API_KEY" "GITHUB_PERSONAL_ACCESS_TOKEN")
+
+    echo "
+Checking MCP environment variables:"
+    for var in "${vars[@]}"; do
+        if [ -z "${!var}" ]; then
+            echo "❌ $var is not set"
+            missing_vars=true
+        else
+            echo "✅ $var is set"
+        fi
+    done
+
+    if [ "$missing_vars" = true ]; then
+        echo "
+Some environment variables are missing. Add them to your ~/.bashrc:"
+        echo "export MCP_SUPABASE_URL=your_url_here"
+        echo "export MCP_FIGMA_API_KEY=your_key_here"
+        echo "export GITHUB_PERSONAL_ACCESS_TOKEN=your_token_here"
+    fi
+}
+
+# Function to show MCP status
+show_mcp_status() {
+    echo "MCP Configuration Status"
+    echo "====================="
+    
+    # Check configuration file
+    if [ -f "$HOME/.cursor/mcp.json" ]; then
+        echo "✅ MCP configuration file exists"
+    else
+        echo "❌ MCP configuration file missing"
+    fi
+
+    # Check environment variables
+    local vars=("MCP_SUPABASE_URL" "MCP_FIGMA_API_KEY" "GITHUB_PERSONAL_ACCESS_TOKEN")
+    for var in "${vars[@]}"; do
+        if [ -n "${!var}" ]; then
+            echo "✅ $var is configured"
+        else
+            echo "❌ $var is not configured"
+        fi
+    done
+}
+
+# Parse command line arguments
+case "$1" in
+    "setup")
+        setup_mcp
+        ;;
+    "status")
+        show_mcp_status
+        ;;
+    *)
+        echo "Usage: cursor-mcp [command]"
+        echo "Commands:"
+        echo "  setup   - Set up MCP configuration"
+        echo "  status  - Show MCP configuration status"
+        ;;
+esac

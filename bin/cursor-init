@@ -1,0 +1,176 @@
+#!/bin/bash
+
+# Cursor Project Initialization Script
+# Usage: cursor-init <project_name> [--type python|nextjs]
+
+if [ -z "$1" ]; then
+    echo "Please provide a project name"
+    exit 1
+fi
+
+# Parse arguments
+PROJECT_NAME="$1"
+PROJECT_TYPE="nextjs"  # default type
+
+if [ "$2" = "--type" ] && [ -n "$3" ]; then
+    PROJECT_TYPE="$3"
+fi
+
+# Create project directory
+mkdir -p "$PROJECT_NAME"
+cd "$PROJECT_NAME" || exit
+
+# Initialize git
+git init
+
+# Link documentation files
+cursor-link-docs
+
+# Create .gitignore
+echo -e ".env
+.env.local
+__pycache__/
+node_modules/
+.next/
+.DS_Store
+venv/
+*.pyc
+.pytest_cache/
+bun.lockb" > .gitignore
+
+# Create .env.example
+touch .env.example
+
+if [ "$PROJECT_TYPE" = "python" ]; then
+    # Python project structure
+    mkdir -p src tests docs
+    touch requirements.txt
+    
+    # Create basic Dockerfile
+    echo -e "FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [\"python\", \"src/main.py\"]" > Dockerfile
+    
+    # Create docker-compose.yml
+    echo -e "version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - \"8000:8000\"
+    env_file:
+      - .env
+    volumes:
+      - .:/app" > docker-compose.yml
+    
+    # Create main.py
+    mkdir -p src
+    echo -e "def main():
+    print(\"Service running\")
+
+if __name__ == \"__main__\":
+    main()" > src/main.py
+    
+    # Create test file
+    mkdir -p tests
+    echo -e "def test_sample():
+    assert True" > tests/test_sample.py
+    
+    # Add basic requirements
+    echo -e "fastapi
+uvicorn
+python-dotenv
+pytest" > requirements.txt
+
+elif [ "$PROJECT_TYPE" = "nextjs" ]; then
+    # Check if bun is installed
+    if ! command -v bun &> /dev/null; then
+        echo "Bun is not installed. Installing Bun..."
+        curl -fsSL https://bun.sh/install | bash
+        source ~/.bashrc
+    fi
+    
+    # Initialize Next.js with Bun
+    bun create next-app . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --no-git
+    
+    # Create additional directories
+    mkdir -p src/components src/styles src/utils src/hooks
+    
+    # Create basic component
+    echo -e "export default function Button({ children }: { children: React.ReactNode }) {
+  return (
+    <button className=\"px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors\">
+      {children}
+    </button>
+  )
+}" > src/components/Button.tsx
+    
+    # Update package.json scripts to use bun
+    cat > package.json << EOL
+{
+  "name": "$PROJECT_NAME",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "lint": "bun --bun next lint"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest"
+  }
+}
+EOL
+
+    # Install dependencies with bun
+    bun install
+fi
+
+# Create README.md
+echo "# $PROJECT_NAME
+
+## Description
+
+Add your project description here.
+
+## Setup
+
+1. Clone the repository
+2. Copy .env.example to .env and configure environment variables
+3. $([ "$PROJECT_TYPE" = "python" ] && echo "Install dependencies: pip install -r requirements.txt" || echo "Install dependencies: bun install")
+4. $([ "$PROJECT_TYPE" = "python" ] && echo "Run the service: python src/main.py" || echo "Run the development server: bun dev")
+
+## Documentation
+
+Refer to the following documentation files:
+- [Best Practices](BEST\ PRACTICES.md)
+- [Requirements Engineering](Requirements\ Engineering.md)
+
+## Development
+
+$([ "$PROJECT_TYPE" = "python" ] && echo "- Run tests: pytest
+- Run in Docker: docker-compose up" || echo "- Run development server: bun dev
+- Build: bun run build
+- Start production server: bun start")" > README.md
+
+echo "Project $PROJECT_NAME initialized successfully as $PROJECT_TYPE project!"

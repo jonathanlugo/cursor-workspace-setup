@@ -1,0 +1,64 @@
+#!/bin/bash
+
+print_help() {
+    cat << "EOF"
+Cursor AI Development Tools Help
+==============================
+
+Available Commands:
+  cinit <project-name> [--type python|nextjs]
+    Initialize a new project with documentation and structure
+    Examples:
+      cinit my-api --type python     # Create Python backend project
+      cinit my-app --type nextjs     # Create Next.js frontend project
+      cinit my-project               # Create Next.js project (default)
+
+  clink
+    Link central documentation to current project
+    Example: clink
+
+  cmcp [setup|status]
+    Manage MCP (Model Context Protocol) configuration
+    Examples:
+      cmcp setup    # Set up MCP configuration
+      cmcp status   # Check MCP status
+
+  chelp [--docs]
+    Show this help message or view full documentation
+    Examples:
+      chelp         # Show this help
+      chelp --docs  # Show full documentation
+
+Documentation Location:
+  ~/.cursor-docs/
+    - BEST PRACTICES.md
+    - Requirements Engineering.md
+    - mcp.template.json
+
+Project Types:
+  Python Projects Include:
+    - FastAPI setup
+    - Docker configuration
+    - Testing setup with pytest
+    - Basic project structure
+
+  Next.js Projects Include:
+    - TypeScript & Tailwind CSS
+    - Bun package manager
+    - Component structure
+    - ESLint configuration
+
+MCP Configuration:
+  The MCP setup provides:
+    - Supabase database connection
+    - Figma API integration
+    - GitHub API access
+  Use `cmcp setup` to configure these services
+EOF
+}
+
+if [ "$1" = "--docs" ]; then
+    cat ~/.cursor-docs/BEST\ PRACTICES.md
+else
+    print_help
+fi
