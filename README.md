@@ -2,6 +2,12 @@
 
 Personal workspace configuration for Cursor AI, including MCP setup, project templates, and development tools.
 
+## Documentation
+
+- [MCP Management](docs/MCP_MANAGEMENT.md) - Guide for adding and managing MCPs
+- [Best Practices](docs/BEST%20PRACTICES.md) - Development and coding standards
+- [Requirements Engineering](docs/Requirements%20Engineering.md) - Project specifications template
+
 ## Quick Start
 
 1. Clone this repository:
@@ -31,62 +37,6 @@ Personal workspace configuration for Cursor AI, including MCP setup, project tem
    cmcp setup
    ```
 
-## Maintenance and Updates
-
-### Local Changes
-When you make changes to your setup:
-1. Edit files in `~/.cursor-docs/`
-2. Test your changes locally
-3. Commit and push to GitHub:
-   ```bash
-   cd ~/.cursor-docs
-   git add .
-   git commit -m "Description of your changes"
-   git push origin main
-   ```
-
-### Syncing Multiple Machines
-If you use multiple computers:
-1. Push changes from machine A
-2. On machine B, pull the latest changes:
-   ```bash
-   cd ~/.cursor-docs
-   git pull origin main
-   source ~/.bashrc  # Apply any new aliases or PATH changes
-   ```
-
-### System Recovery
-If you need to set up a new machine:
-1. Clone the repository
-2. Set up aliases in `.bashrc`
-3. Configure environment variables:
-   ```bash
-   export MCP_SUPABASE_URL="your_url"
-   export MCP_FIGMA_API_KEY="your_key"
-   export GITHUB_PERSONAL_ACCESS_TOKEN="your_token"
-   ```
-4. Run `cmcp setup` to verify configuration
-
-## Security
-
-### Repository Access
-- This repository is public (readable by anyone)
-- Only the owner (you) can write to it
-- Others can:
-  - View and clone the repository
-  - Fork it to their own account
-  - Submit pull requests for your review
-- No sensitive data is stored in the repository
-  - MCP configuration uses environment variables
-  - Credentials are stored locally in `~/.bashrc`
-
-### Best Practices
-- Never commit sensitive data or credentials
-- Use environment variables for all secrets
-- Keep your GitHub token secure
-- Regularly update your access tokens
-- Review public repository content
-
 ## Available Commands
 
 - `cinit <project-name> [--type python|nextjs]` - Initialize a new project
@@ -108,6 +58,7 @@ If you need to set up a new machine:
 │   └── docs/             # Documentation templates
 └── docs/                  # Central documentation
     ├── BEST PRACTICES.md
+    ├── MCP_MANAGEMENT.md
     └── Requirements Engineering.md
 ```
 
@@ -128,11 +79,6 @@ If you need to set up a new machine:
 - ESLint configuration
 - Environment setup
 - Modern development practices
-
-## Documentation
-
-- [Best Practices](docs/BEST%20PRACTICES.md)
-- [Requirements Engineering](docs/Requirements%20Engineering.md)
 
 ## Contributing
 
